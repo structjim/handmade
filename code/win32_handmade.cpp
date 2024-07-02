@@ -2,6 +2,7 @@
 //Hero tutorials. For details on the project, go to https://handmadehero.org/
 #include<windows.h>
 #include<stdint.h>
+#include<xinput.h>
 
 #define internal static
 #define local_persist static
@@ -250,6 +251,41 @@ WinMain(HINSTANCE Instance,
 					TranslateMessage(&Message);
 					DispatchMessageA(&Message);
 				}
+
+				//TODO:(casey) Should we poll this more frequently?
+				for (DWORD ControllerIndex = 0;
+					 ControllerIndex < XUSER_MAX_COUNT;
+					 ++ControllerIndex)
+				{
+					XINPUT_STATE ControllerState;
+					if(XInputGetState(ControllerIndex, &ControllerState) == ERROR_SUCCESS)
+					{
+						//NOTE:(casey): This controller is plugged in
+						//TODO:(casey): See if ControllerState.dwPacketNumberimcrements too rapidly
+						XINPUT_GAMEPAD *Pad = &ControllerState.Gamepad;
+
+						bool Up = (Pad->wButtons & XINPUT_GAMEPAD_DPAD_UP);
+						bool Down = (Pad->wButtons & XINPUT_GAMEPAD_DPAD_DOWM);
+						bool Left = (Pad->wButtons & XINPUT_GAMEPAD_DPAD_LEFT);
+						bool Right = (Pad->wButtons & XINPUT_GAMEPAD_DPAD_RIGHT);
+						bool Start = (Pad->wButtons & XINPUT_GAMEPAD_START);
+						bool Back = (Pad->wButtons & XINPUT_GAMEPAD_BACK);
+						bool LeftShoulder = (Pad->wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER);
+						bool RightShoulder = (Pad->wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER);
+						bool AButton = (Pad->wButtons & XINPUT_GAMEPAD_A);
+						bool BButton = (Pad->wButtons & XINPUT_GAMEPAD_B);
+						bool XButton = (Pad->wButtons & XINPUT_GAMEPAD_X);
+						bool YButton = (Pad->wButtons & XINPUT_GAMEPAD_Y);
+
+						int16 StickX = Pad->sThumbLX;
+						int16 StickY = Pad->sThumbLY;
+					}
+					else
+					{
+						//NOTE:(casey): The controller is not available
+					}
+				}
+				
 				RenderWeirdGradient(GlobalBackbuffer, XOffset, YOffset);
 
 				win32_window_dimension Dimension = Win32GetWindowDimension(Window);

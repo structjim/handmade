@@ -18,4 +18,4 @@ if %errorlevel% neq 0 (
     echo [ERROR] Build failed. Aborting run.
     exit /b %errorlevel%
 )
-..\..\build\win32_handmade.exe
+..\build\win32_handmade.exe
